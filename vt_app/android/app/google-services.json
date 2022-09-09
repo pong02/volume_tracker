@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "892050477593",
+    "project_id": "vt-app-413bb",
+    "storage_bucket": "vt-app-413bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892050477593:android:743d0a8ab76cb04bed9088",
+        "android_client_info": {
+          "package_name": "com.example.volume_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "892050477593-bg2l50ur7ov50ms2b6v7vq4kaa7tbsp9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA6sCpiNUmHTi6UCH4bUIMzWQBIiBdKZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "892050477593-bg2l50ur7ov50ms2b6v7vq4kaa7tbsp9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

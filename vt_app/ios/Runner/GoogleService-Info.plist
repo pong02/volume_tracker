@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>892050477593-3421asv09aqhu9vp4hrevqi68rl80pe0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.892050477593-3421asv09aqhu9vp4hrevqi68rl80pe0</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDkDnV-JtT52ggPQrFikXR4vtZ0fq_vczk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>892050477593</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.volumeTracker</string>
+	<key>PROJECT_ID</key>
+	<string>vt-app-413bb</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vt-app-413bb.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:892050477593:ios:b2c6a2ae20b557b3ed9088</string>
+</dict>
+</plist>
