@@ -4,17 +4,18 @@ import 'package:volume_tracker/ui/theme.dart';
 import 'package:volume_tracker/ui/vm/loginController.dart';
 import 'package:volume_tracker/ui/topBar.dart';
 
-class HomeScreen extends HookConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+//keep as hook consumer because might be used to update some providers (color mode, profile etc)
+class SettingScreen extends HookConsumerWidget {
+  const SettingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        appBar: VAppBar(pageName: 'Home'),
+        appBar: VAppBar(pageName: 'Settings'),
         body: Center(
           child: Column(children: [
             Text(
-              "WELCOME TO HOME PAGE",
+              "WELCOME TO setting PAGE",
               style: AppTheme.defTextStyleTitle,
             ),
             ElevatedButton(
@@ -23,6 +24,7 @@ class HomeScreen extends HookConsumerWidget {
               ),
               onPressed: () {
                 ref.read(loginControllerProvider.notifier).logout();
+                Navigator.pop(context);
               },
             )
           ]),
