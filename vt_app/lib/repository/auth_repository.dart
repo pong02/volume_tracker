@@ -29,6 +29,10 @@ class AuthRepository {
   Future<void> signOut() async {
     await _auth.signOut();
   }
+
+  Future<User?> getUser() async {
+    return _auth.currentUser;
+  }
 }
 
 class AuthException implements Exception {
