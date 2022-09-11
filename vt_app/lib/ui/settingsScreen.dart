@@ -1,11 +1,12 @@
+// ignore_for_file: file_names, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_tracker/ui/theme.dart';
 import 'package:volume_tracker/ui/vm/loginController.dart';
 import 'package:volume_tracker/ui/topBar.dart';
-import 'package:volume_tracker/providers/setting_provider.dart';
 import 'package:volume_tracker/ui/dummyRedir.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:volume_tracker/ui/toggleTiles.dart';
 
 //keep as hook consumer because might be used to update some providers (color mode, profile etc)
 class SettingScreen extends StatefulHookConsumerWidget {
@@ -18,7 +19,6 @@ class SettingScreen extends StatefulHookConsumerWidget {
 class _SettingState extends ConsumerState<SettingScreen> {
   String displayName = "";
   _SettingState();
-  late List<ToggleableOptionTile> _toggleCollection;
 
   @override
   void initState() {
@@ -31,28 +31,6 @@ class _SettingState extends ConsumerState<SettingScreen> {
     //     });
     //   }
     // }); //settle because value not immediately built
-
-    //generate toggles
-    _toggleCollection = [
-      ToggleableOptionTile(
-        name: "Notification",
-        storageKey: "notification",
-        streamProvider: notiStreamProvider,
-        stateProvider: notiStateProvider,
-      ),
-      ToggleableOptionTile(
-        name: "Location services",
-        storageKey: "location",
-        streamProvider: locStreamProvider,
-        stateProvider: locStateProvider,
-      ),
-      ToggleableOptionTile(
-        name: "Nightmode",
-        storageKey: "nightmode",
-        streamProvider: nightStreamProvider,
-        stateProvider: nightStateProvider,
-      ),
-    ];
   }
 
   @override
@@ -61,7 +39,9 @@ class _SettingState extends ConsumerState<SettingScreen> {
         appBar: VAppBar(pageName: 'Settings'),
         body: Center(
             child: Column(children: [
-          _toggleCollection.elementAt(2),
+          const LocationToggle(),
+          const ThemeToggle(),
+          const NotificationToggle(),
           SettingOptionTile(name: "Deactivate Account"),
           SettingOptionTile(name: "Recover Account"),
           SettingOptionTile(name: "Report a bug"),
@@ -82,10 +62,11 @@ class SettingOptionTile extends StatefulWidget {
   final Widget onTapRedir;
 
   SettingOptionTile({
+    Key? key,
     required this.name,
     this.tooltip = "",
     this.onTapRedir = const DummyRedir(),
-  });
+  }) : super(key: key);
 
   @override
   _SettingOptionTileState createState() => _SettingOptionTileState();
@@ -102,80 +83,12 @@ class _SettingOptionTileState extends State<SettingOptionTile> {
             )),
         child: ListTile(
           title: Text(widget.name),
-          trailing: Icon(Icons.arrow_forward_ios_rounded),
+          trailing: const Icon(Icons.arrow_forward_ios_rounded),
         ));
   }
 }
 
-class ToggleableOptionTile extends ConsumerStatefulWidget {
-  final String name;
-  final String tooltip;
-  final AutoDisposeStreamProvider<bool> streamProvider;
-  final StateProvider<Future<bool>> stateProvider;
-  final String storageKey;
-
-  ToggleableOptionTile({
-    required this.name,
-    this.tooltip = "",
-    required this.streamProvider,
-    required this.stateProvider,
-    required this.storageKey,
-  });
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ToggleableOptionTileState();
-}
-
-class _ToggleableOptionTileState extends ConsumerState<ToggleableOptionTile> {
-  bool _switchedOn = false;
-
-  void getFlag() {
-    //get the configs from normal storage
-
-    ref.read(widget.stateProvider.notifier).state.then((value) {
-      print("${widget.name} init entry: $_switchedOn");
-      _switchedOn = value;
-      print("${widget.name} init complete: $_switchedOn");
-      setState(() {});
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getFlag();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Future<bool> pValue = localStorage.getBoolValuesSF(widget.storageKey);
-    Future<bool> cValue;
-    return ListTile(
-      title: Text(widget.name),
-      trailing: CupertinoSwitch(
-        value: _switchedOn,
-        onChanged: (bool value) {
-          print("toggle (${widget.name}) pressed: $value");
-          setState(() {
-            _switchedOn = value;
-          });
-          localStorage.setBool(widget.storageKey,
-              value); //update all providers +storage immediately
-          cValue = localStorage.getBoolValuesSF(widget.storageKey);
-          ref.refresh(widget.streamProvider);
-          ref.refresh(widget.stateProvider.notifier);
-          widget.stateProvider.updateShouldNotify(pValue, cValue);
-          ref.read(widget.stateProvider.notifier).state.then((value) {
-            print("postclick state: $value");
-          });
-        },
-      ),
-    );
-  }
-}
-
-class PopUpTile extends StatefulWidget {
+class PopUpTile extends ConsumerStatefulWidget {
   final String name;
   final String tooltip;
   final String dialogTitle;
@@ -184,18 +97,20 @@ class PopUpTile extends StatefulWidget {
   final String noOptionText;
 
   PopUpTile(
-      {required this.name,
+      {Key? key,
+      required this.name,
       this.tooltip = "",
       this.dialogTitle = "No title was given",
       this.dialogMsg = "No message was given",
       this.yesOptionText = "OK",
-      this.noOptionText = "Cancel"});
+      this.noOptionText = "Cancel"})
+      : super(key: key);
 
   @override
   _PopUpTileState createState() => _PopUpTileState();
 }
 
-class _PopUpTileState extends State<PopUpTile> {
+class _PopUpTileState extends ConsumerState<PopUpTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -211,8 +126,11 @@ class _PopUpTileState extends State<PopUpTile> {
                     child: Text(widget.noOptionText),
                   ),
                   TextButton(
-                    onPressed: () =>
-                        Navigator.pop(context, widget.yesOptionText),
+                    onPressed: () {
+                      ref.read(loginControllerProvider.notifier).logout();
+                      redirLogout(context);
+                      Navigator.pop(context, widget.yesOptionText);
+                    },
                     child: Text(widget.yesOptionText),
                   ),
                 ],
@@ -220,7 +138,7 @@ class _PopUpTileState extends State<PopUpTile> {
             ),
         child: ListTile(
           title: Text(widget.name),
-          trailing: Icon(Icons.arrow_forward_ios_rounded),
+          trailing: const Icon(Icons.arrow_forward_ios_rounded),
         ));
   }
 }

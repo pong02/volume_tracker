@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,7 +22,6 @@ class VAppBar extends HookConsumerWidget implements PreferredSizeWidget {
       leading: IconButton(
         icon: const Icon(Icons.account_circle_rounded),
         onPressed: () {
-          final navigator = Navigator.of(context);
           _redirProfile(context, ref);
         },
       ),
@@ -31,8 +32,9 @@ class VAppBar extends HookConsumerWidget implements PreferredSizeWidget {
             if (choice == Options.signout) {
               //invoke provider logout
               ref.read(loginControllerProvider.notifier).logout();
+              redirLogout(context);
             } else if (choice == Options.settings) {
-              _redirSettings(context, ref);
+              _redirSettings(context);
               //push settings screen with back button
             }
           },
@@ -59,7 +61,7 @@ class VAppBar extends HookConsumerWidget implements PreferredSizeWidget {
         MaterialPageRoute(builder: (context) => ProfileScreen(profile: user)));
   }
 
-  void _redirSettings(BuildContext context, WidgetRef ref) {
+  void _redirSettings(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingScreen()),
