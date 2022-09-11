@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 class DummyRedir extends StatelessWidget {
@@ -7,7 +9,7 @@ class DummyRedir extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Placeholder widget"),
+        title: const Text("Placeholder widget"),
       ),
     );
   }

@@ -1,4 +1,7 @@
+// ignore_for_file: file_names
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:volume_tracker/providers/auth_provider.dart';
 import 'package:volume_tracker/ui/vm/loginState.dart';
@@ -32,3 +35,11 @@ final loginControllerProvider =
     StateNotifierProvider<LoginController, LoginState>((ref) {
   return LoginController(ref);
 });
+
+//function to clear all routes other than home screen in stack
+void redirLogout(BuildContext context) async {
+  final navigator = Navigator.of(context);
+  if (navigator.canPop()) {
+    navigator.pop();
+  }
+}
