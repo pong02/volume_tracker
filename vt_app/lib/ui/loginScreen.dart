@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_tracker/ui/registerScreen.dart';
 import 'package:volume_tracker/ui/theme.dart';
 import 'package:volume_tracker/ui/vm/loginController.dart';
 import 'package:volume_tracker/ui/vm/loginState.dart';
@@ -96,13 +97,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       style: AppTheme.defTextStyleHighlighted,
                     ),
                     onPressed: () {
-                      //signup screen
+                      _redirRegister(context);
                     },
                   )
                 ],
               ),
             ],
           )),
+    );
+  }
+
+  void _redirRegister(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Register()),
     );
   }
 }

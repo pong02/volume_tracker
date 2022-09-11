@@ -37,7 +37,7 @@ final loginControllerProvider =
 });
 
 //function to clear all routes other than home screen in stack
-void redirLogout(BuildContext context) async {
+void redirLogout(BuildContext context) {
   final navigator = Navigator.of(context);
   if (navigator.canPop()) {
     navigator.pop();

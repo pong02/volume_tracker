@@ -26,6 +26,19 @@ class AuthRepository {
     }
   }
 
+  Future<User?> registerWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      User? user = result.user;
+      return user;
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }

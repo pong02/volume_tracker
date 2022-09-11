@@ -25,6 +25,7 @@ class HomeScreen extends HookConsumerWidget {
               ),
               onPressed: () {
                 ref.read(loginControllerProvider.notifier).logout();
+                redirLogout(context);
               },
             )
           ]),
