@@ -49,7 +49,7 @@ class _RegisterState extends ConsumerState<Register> {
                 validator: (val) =>
                     val!.isEmpty ? 'Please enter an email' : null,
                 onChanged: (val) {
-                  setState(() => email = val);
+                  setState(() => email = val.trim());
                 },
               ),
               SizedBox(height: 20.0),

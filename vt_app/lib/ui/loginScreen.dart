@@ -6,6 +6,7 @@ import 'package:volume_tracker/ui/registerScreen.dart';
 import 'package:volume_tracker/ui/theme.dart';
 import 'package:volume_tracker/ui/vm/loginController.dart';
 import 'package:volume_tracker/ui/vm/loginState.dart';
+import 'package:volume_tracker/ui/forgotScreen.dart';
 
 class LoginScreen extends StatefulHookConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -69,7 +70,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  //forgot password screen
+                  _redirForgot(context);
                 },
                 child: Text(
                   'Forgot Password',
@@ -111,6 +112,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Register()),
+    );
+  }
+
+  void _redirForgot(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ForgotScreen()),
     );
   }
 }
