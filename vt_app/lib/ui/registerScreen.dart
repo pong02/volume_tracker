@@ -25,13 +25,11 @@ class _RegisterState extends ConsumerState<Register> {
   String password = '';
   bool confirmPW = false;
 
-  //TODO: add container on everything to format like login screen.
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -41,7 +39,7 @@ class _RegisterState extends ConsumerState<Register> {
                   padding: const EdgeInsets.all(10),
                   child: Text('Sign up',
                       style: AppTheme.defTextStyleTitleColored)),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Email Address',
@@ -52,7 +50,7 @@ class _RegisterState extends ConsumerState<Register> {
                   setState(() => email = val.trim());
                 },
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Password',
@@ -64,7 +62,7 @@ class _RegisterState extends ConsumerState<Register> {
                   setState(() => password = val);
                 },
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Confirm Password',
@@ -76,21 +74,23 @@ class _RegisterState extends ConsumerState<Register> {
                   setState(() => confirmPW = (val == password));
                 },
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               ElevatedButton(
                   child: const Text('Register'),
                   onPressed: () async {
                     if (_formKey.currentState!.validate() &
                         (confirmPW = true)) {
-                      dynamic result;
                       try {
-                        result = await _auth.createUserWithEmailAndPassword(
+                        await _auth.createUserWithEmailAndPassword(
                             email: email, password: password);
                         ref
                             .read(loginControllerProvider.notifier)
                             .login(email, password);
                         LoginState state =
                             ref.read(loginControllerProvider.notifier).state;
+                        if (!mounted) {
+                          return;
+                        }
                         if (state is LoginStateError) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(state.error),

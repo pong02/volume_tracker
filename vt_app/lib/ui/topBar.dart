@@ -12,42 +12,52 @@ import 'package:volume_tracker/ui/vm/loginController.dart';
 class VAppBar extends HookConsumerWidget implements PreferredSizeWidget {
   final String pageName;
   final double height;
+  final bool showProfile;
+  final bool showMenu;
 
-  VAppBar({Key? key, required this.pageName, this.height = kToolbarHeight})
+  VAppBar(
+      {Key? key,
+      required this.pageName,
+      this.height = kToolbarHeight,
+      this.showProfile = true,
+      this.showMenu = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.account_circle_rounded),
-        onPressed: () {
-          _redirProfile(context, ref);
-        },
-      ),
+      leading: showProfile
+          ? IconButton(
+              icon: const Icon(Icons.account_circle_rounded),
+              onPressed: () {
+                _redirProfile(context, ref);
+              },
+            )
+          : null,
       title: Text(pageName),
-      actions: <Widget>[
-        PopupMenuButton<String>(
-          onSelected: (choice) {
-            if (choice == Options.signout) {
-              //invoke provider logout
-              ref.read(loginControllerProvider.notifier).logout();
-              redirLogout(context);
-            } else if (choice == Options.settings) {
-              _redirSettings(context);
-              //push settings screen with back button
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return Options.choices.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        )
-      ],
+      actions: showMenu
+          ? <Widget>[
+              PopupMenuButton<String>(
+                onSelected: (choice) {
+                  if (choice == Options.signout) {
+                    //invoke provider logout
+                    ref.read(loginControllerProvider.notifier).logout();
+                  } else if (choice == Options.settings) {
+                    _redirSettings(context);
+                    //push settings screen with back button
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return Options.choices.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+              )
+            ]
+          : null,
     );
   }
 
@@ -58,7 +68,7 @@ class VAppBar extends HookConsumerWidget implements PreferredSizeWidget {
     final navigator = Navigator.of(context);
     User? user = await ref.read(loginControllerProvider.notifier).getUser();
     navigator.push(
-        MaterialPageRoute(builder: (context) => ProfileScreen(profile: user)));
+        MaterialPageRoute(builder: (context) => ProfileScreen(user: user!)));
   }
 
   void _redirSettings(BuildContext context) {

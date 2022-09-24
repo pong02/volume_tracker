@@ -1,7 +1,10 @@
 // ignore_for_file: file_names, library_private_types_in_public_api
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:volume_tracker/providers/auth_provider.dart';
+import 'package:volume_tracker/ui/deactivateScreen.dart';
 import 'package:volume_tracker/ui/theme.dart';
 import 'package:volume_tracker/ui/vm/loginController.dart';
 import 'package:volume_tracker/ui/topBar.dart';
@@ -17,40 +20,124 @@ class SettingScreen extends StatefulHookConsumerWidget {
 }
 
 class _SettingState extends ConsumerState<SettingScreen> {
-  String displayName = "";
   _SettingState();
 
   @override
   void initState() {
     super.initState();
-    //get ? from secure storage
-    // context.read(userNameProvider).state.then((value) {
-    //   if (value != null) {
-    //     setState(() {
-    //       displayName = value;
-    //     });
-    //   }
-    // }); //settle because value not immediately built
+  }
+
+  String getDisplayName(WidgetRef ref) {
+    User? user = ref.watch(authRepositoryProvider).getCurrentUser();
+    return user!.email ?? "unknown";
+  }
+
+  Future<void> resetPW() async {
+    final auth = FirebaseAuth.instance;
+    final String email = getDisplayName(ref);
+    String error = "";
+    Navigator.pop(context);
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+    } on FirebaseException catch (e) {
+      error = e.message.toString();
+    }
+    if (!mounted) {
+      return;
+    }
+    if (error.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Email Sent!"),
+        duration: Duration(seconds: 20),
+      ));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
+    }
+  }
+
+  Future<void> verifyEmail() async {
+    User? user = ref.watch(authRepositoryProvider).getCurrentUser();
+    String error = "";
+    try {
+      if (user!.emailVerified) {
+        error = "Account already verified!";
+      } else if (!user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    } on FirebaseException catch (e) {
+      error = e.message.toString();
+    }
+    if (!mounted) {
+      return;
+    }
+    Navigator.pop(context);
+    if (error.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text("Email Sent! Please log out."),
+          duration: const Duration(seconds: 20),
+          action: SnackBarAction(
+              label: 'OK',
+              onPressed: () {
+                ref.read(loginControllerProvider.notifier).logout();
+              })));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
+    }
+  }
+
+  void logOutAux() {
+    ref.read(loginControllerProvider.notifier).logout();
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    late final String displayName = getDisplayName(ref);
+    if (displayName.compareTo("unknown") == 0) {
+      Navigator.pop(context);
+    }
     return Scaffold(
-        appBar: VAppBar(pageName: 'Settings'),
+        appBar:
+            VAppBar(pageName: 'Settings', showMenu: false, showProfile: false),
         body: Center(
             child: Column(children: [
           const LocationToggle(),
           const ThemeToggle(),
           const NotificationToggle(),
-          SettingOptionTile(name: "Deactivate Account"),
-          SettingOptionTile(name: "Recover Account"),
-          SettingOptionTile(name: "Report a bug"),
+          SettingOptionTile(
+            name: "Deactivate Account",
+            onTapRedir: const DeactivateScreen(),
+          ), //confirm deactivation by reauth
+          PopUpTile(
+            // verify screen -> without prompt
+            name: "Recover Account",
+            yesOptionText: "OK",
+            dialogTitle: "Send Recovery Email",
+            dialogMsg:
+                "Send reset email to $displayName? Please be sure to check under spam and be patient!",
+            yesFunction: resetPW,
+          ),
+          SettingOptionTile(
+              name:
+                  "Report a bug"), //TODO: https://pub.dev/packages/flutter_email_sender -> redirect to emailapp
+          PopUpTile(
+            // verify screen -> without prompt
+            name: "Verify Email",
+            yesOptionText: "Verify",
+            dialogTitle: "Verify your account?",
+            dialogMsg:
+                "Are you sure? Please be sure to check under spam and be patient!",
+            yesFunction: verifyEmail,
+          ),
           PopUpTile(
             name: "Logout",
             yesOptionText: "Log out",
             noOptionText: "Cancel",
             dialogTitle: "Are you sure you want to logout?",
             dialogMsg: "Logged in as $displayName",
+            yesFunction: logOutAux,
           )
         ])));
   }
@@ -95,6 +182,7 @@ class PopUpTile extends ConsumerStatefulWidget {
   final String dialogMsg;
   final String yesOptionText;
   final String noOptionText;
+  final void Function() yesFunction;
 
   PopUpTile(
       {Key? key,
@@ -103,7 +191,8 @@ class PopUpTile extends ConsumerStatefulWidget {
       this.dialogTitle = "No title was given",
       this.dialogMsg = "No message was given",
       this.yesOptionText = "OK",
-      this.noOptionText = "Cancel"})
+      this.noOptionText = "Cancel",
+      required this.yesFunction})
       : super(key: key);
 
   @override
@@ -126,11 +215,7 @@ class _PopUpTileState extends ConsumerState<PopUpTile> {
                     child: Text(widget.noOptionText),
                   ),
                   TextButton(
-                    onPressed: () {
-                      ref.read(loginControllerProvider.notifier).logout();
-                      redirLogout(context);
-                      Navigator.pop(context, widget.yesOptionText);
-                    },
+                    onPressed: widget.yesFunction,
                     child: Text(widget.yesOptionText),
                   ),
                 ],

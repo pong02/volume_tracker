@@ -34,7 +34,7 @@ class AuthRepository {
       User? user = result.user;
       return user;
     } catch (error) {
-      print(error.toString());
+      //print(error.toString());
       return null;
     }
   }
@@ -44,6 +44,10 @@ class AuthRepository {
   }
 
   Future<User?> getUser() async {
+    return _auth.currentUser;
+  }
+
+  User? getCurrentUser() {
     return _auth.currentUser;
   }
 }

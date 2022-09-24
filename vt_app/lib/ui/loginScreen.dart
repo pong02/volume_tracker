@@ -118,7 +118,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _redirForgot(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ForgotScreen()),
+      MaterialPageRoute(builder: (context) => const ForgotScreen()),
     );
   }
 }

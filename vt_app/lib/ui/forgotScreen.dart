@@ -18,7 +18,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reset Password'),
+        title: const Text('Reset Password'),
       ),
       body: Column(
         children: [
@@ -41,7 +41,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                  child: Text('Send Request'),
+                  child: const Text('Send Request'),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       String? msg;
