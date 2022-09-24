@@ -48,7 +48,7 @@ class _SettingState extends ConsumerState<SettingScreen> {
     if (error.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Email Sent!"),
-        duration: Duration(seconds: 20),
+        duration: Duration(seconds: 5),
       ));
     } else {
       ScaffoldMessenger.of(context)
@@ -73,14 +73,13 @@ class _SettingState extends ConsumerState<SettingScreen> {
     }
     Navigator.pop(context);
     if (error.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text("Email Sent! Please log out."),
-          duration: const Duration(seconds: 20),
-          action: SnackBarAction(
-              label: 'OK',
-              onPressed: () {
-                ref.read(loginControllerProvider.notifier).logout();
-              })));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Email Sent! Logging out."),
+        duration: Duration(seconds: 5),
+      ));
+      Future.delayed(const Duration(seconds: 5), () {
+        ref.read(loginControllerProvider.notifier).logout();
+      });
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(error)));

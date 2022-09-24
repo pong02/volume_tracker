@@ -49,6 +49,8 @@ class AppTheme {
   );
 
   //normal text style
+  static const defTextStyleBig =
+      TextStyle(color: lightBG, fontSize: 17.0, fontWeight: FontWeight.bold);
   static const defTextStyleNormal = TextStyle(color: lightBG, fontSize: 14.0);
   static const defTextStyleBolded =
       TextStyle(color: lightBG, fontSize: 14.0, fontWeight: FontWeight.bold);
@@ -62,6 +64,8 @@ class AppTheme {
       TextStyle(fontWeight: FontWeight.w500, color: lightBG, fontSize: 30.0);
 
   //light text style
+  static const lightTextStyleBig =
+      TextStyle(color: darkBG, fontSize: 17.0, fontWeight: FontWeight.bold);
   static const lightTextStyleNormal = TextStyle(color: darkBG, fontSize: 14.0);
   static const lightTextStyleBolded =
       TextStyle(color: darkBG, fontSize: 14.0, fontWeight: FontWeight.bold);
