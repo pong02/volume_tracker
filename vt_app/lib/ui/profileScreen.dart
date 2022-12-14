@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: Column(crossAxisAlignment: CrossAxisAlignment.center,
             //mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //experminet username space
+              //username space
               (Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Visibility(
                   maintainState: true,
@@ -126,11 +126,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: IconButton(
                       onPressed: () {}, icon: const Icon(Icons.edit)),
                 ),
-                Text(
-                  _nameController.text,
+                Flexible(child: Text(
+                  _nameController.text,overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: AppTheme.defTextStyleBig,
-                ),
+                )),
                 IconButton(
                     onPressed: changeDisplayName, icon: const Icon(Icons.edit))
               ])),

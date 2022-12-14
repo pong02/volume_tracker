@@ -29,6 +29,13 @@
             {
               "client_id": "892050477593-bg2l50ur7ov50ms2b6v7vq4kaa7tbsp9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "892050477593-3421asv09aqhu9vp4hrevqi68rl80pe0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.volumeTracker"
+              }
             }
           ]
         }
